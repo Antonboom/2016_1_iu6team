@@ -11,6 +11,7 @@ define(function(require) {
 			})
 		);
 
+		this._mesh.scale.x = this._mesh.scale.y = this._mesh.scale.z = 2;
 		this._mesh.position.copy(position);
 	}
 

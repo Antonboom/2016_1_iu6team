@@ -48,10 +48,21 @@ define(function(require) {
                     game._world.getScene().remove(shots[i].getMesh());
                     shots.splice(i, 1);
                 }*/
-                shots[i].getMesh().translateX(2 * shots[i].ray.direction.x);
-                shots[i].getMesh().translateY(2 * shots[i].ray.direction.y + 0.2); // Выстрел чуть выше
-                shots[i].getMesh().translateZ(2 * shots[i].ray.direction.z);
+                shots[i].getMesh().translateX(10 * shots[i].ray.direction.x);
+                shots[i].getMesh().translateY(10 * shots[i].ray.direction.y + 0.7); // Выстрел чуть выше
+                shots[i].getMesh().translateZ(10 * shots[i].ray.direction.z);
             }    
+
+
+            // Стрелка
+            /*
+            var sourcePos = new THREE.Vector3().setFromMatrixPosition(game._player.getPositionInWorld());
+            var targetPos = new THREE.Vector3().setFromMatrixPosition(game._enemy.getPositionInWorld());
+            var direction = new THREE.Vector3().sub(targetPos, sourcePos);
+            
+            game._arrow.position.set(sourcePos);
+            game._arrow.setDirection(direction.normalize());
+            game._arrow.setLength(direction.length());*/
         };
     }
 
@@ -183,6 +194,13 @@ define(function(require) {
             game._controls.movementSpeed =  30;
             game._controls.rollSpeed = 1;
 
+            var sourcePos = new THREE.Vector3(0, 10, 0);
+            var targetPos = new THREE.Vector3().setFromMatrixPosition(game._enemy.getPositionInWorld());
+            var direction = new THREE.Vector3().sub(targetPos, sourcePos);
+
+            game._arrow = new THREE.ArrowHelper(direction.clone().normalize(), sourcePos, 1, 0x00ff00);  
+             game._world.getCamera().add(game._arrow);
+            game._world.add(game._arrow);
 
             game._world.start();
             setInterval(game.sendData.bind(game), 60);
@@ -218,7 +236,7 @@ define(function(require) {
                 var target, color;
                 for (var i = 0; i < intersects.length; i++ ) {
                     target = intersects[i];
-                    console.log(target);
+                    // console.log(target);
                     if (!(target.name !== 'SPHERE')) {
                         color = target.object.material.color;
                         target.object.material.color.set(0xff0000);
