@@ -34,6 +34,7 @@ define(function(require) {
                     mesh.tranlation = geometry.center();
                     mesh.receiveShadow = true;
                     
+                    mesh.name = 'PLAYER';
                     spacecraft._mesh = mesh;
                     resolve(mesh);
                 }

@@ -48,9 +48,9 @@ define(function(require) {
                     game._world.getScene().remove(shots[i].getMesh());
                     shots.splice(i, 1);
                 }*/
-                shots[i].getMesh().translateX(10 * shots[i].ray.direction.x);
-                shots[i].getMesh().translateX(10 * shots[i].ray.direction.y);
-                shots[i].getMesh().translateZ(10 * shots[i].ray.direction.z);
+                shots[i].getMesh().translateX(2 * shots[i].ray.direction.x);
+                shots[i].getMesh().translateY(2 * shots[i].ray.direction.y + 0.2); // Выстрел чуть выше
+                shots[i].getMesh().translateZ(2 * shots[i].ray.direction.z);
             }    
         };
     }
@@ -60,7 +60,7 @@ define(function(require) {
             camRotation = this._world.getCamera().rotation;
 
         this._player.update(camPosition, camRotation);
-        //this._enemy.update();
+
     }
 
     Game.prototype.createConnection = function() {
@@ -97,14 +97,27 @@ define(function(require) {
                 return;
             }   
 
-            if (game._status.gaming) {            
-                game._enemy.getMesh().position.x = data.posX;
-                game._enemy.getMesh().position.y = data.posY;
-                game._enemy.getMesh().position.z = data.posZ;
 
-                game._enemy.getMesh().rotation.x = data.rotX;
-                game._enemy.getMesh().rotation.y = data.rotY;
-                game._enemy.getMesh().rotation.z = data.rotZ;
+            if (game._status.gaming) {
+
+                game._enemyCamera.position.x = data.posX;
+                game._enemyCamera.position.y = data.posY;
+                game._enemyCamera.position.z = data.posZ;
+
+                game._enemyCamera.rotation.x = data.rotX;
+                game._enemyCamera.rotation.y = data.rotY;
+                game._enemyCamera.rotation.z = data.rotZ;
+
+//                game._enemy.getMesh().position.x = data.posX;
+//                game._enemy.getMesh().position.y = data.posY;
+//                game._enemy.getMesh().position.z = data.posZ;
+//
+//                game._enemy.getMesh().rotation.x = data.rotX;
+//                game._enemy.getMesh().rotation.y = data.rotY;
+//                game._enemy.getMesh().rotation.z = data.rotZ;
+
+       //         game._enemy.getMesh().rotateY(Math.PI);
+
             }
         };
 
@@ -134,8 +147,11 @@ define(function(require) {
         var game = this,
             controls = null;
 
+
+        //game._player = new Player({posX: 0, posY: -2, posZ: -20 });
         game._player = new Player({posX: 0, posY: -2, posZ: -20 });
-        game._enemy = new Player({posX: 0, posY: 10, posZ: -30 });
+        game._enemy = new Player({posX: 0, posY: -2, posZ: -20 });
+
 
         // Players
         Promise.all([
@@ -148,16 +164,29 @@ define(function(require) {
             });
 
 
+            game._enemyCamera = new THREE.PerspectiveCamera(
+                45,
+                game._world.getContainer().width / game._world.getContainer().height,
+                1,
+                2000
+            );
+            game._enemyCamera.add(results[2]);
+            game._world.add(game._enemyCamera);
+
+
             game._world.getCamera().add(results[1]);
             game._controls = new THREE.FlyControls(game._world.getCamera(), game._world.getContainer());
 
+
             game._controls.dragToLook = false;
-            game._controls.autoForward = true;
-            game._controls.movementSpeed =  20;
-            game._controls.rollSpeed = Math.PI / 10;
+            game._controls.autoForward = false;
+            game._controls.movementSpeed =  30;
+            game._controls.rollSpeed = 1;
+
 
             game._world.start();
-            setInterval(game.sendData.bind(game), 300);
+            setInterval(game.sendData.bind(game), 60);
+
 
 
             $(document).on('click', function (event) {
@@ -168,13 +197,13 @@ define(function(require) {
                 var vector = new THREE.Vector3();
                 vector.setFromMatrixPosition(game._player.getPositionInWorld());
                 var shot = new Shot(vector);
-                
+
                 var mouse = new THREE.Vector3(
                     (event.clientX / window.innerWidth ) * 2 - 1, 
                     (event.clientY / window.innerHeight ) * 2 + 1,
-                    0.5
+                    1
                 );
-                raycaster.setFromCamera(mouse, camera );
+                raycaster.setFromCamera(vector, camera);
 
                 shot.ray = new THREE.Ray(
                     camera.position,
@@ -183,27 +212,25 @@ define(function(require) {
 
                 shots.push(shot);
                 game._world.add(shot.getMesh());
-                /*
+
                 var intersects = raycaster.intersectObjects(game._world.getScene().children);
 
-                for ( var i = 0; i < intersects.length; i++ ) {
-                    intersects[ i ].object.material.color.set( 0xff0000 );    
-                }/*
-                var material = new THREE.LineBasicMaterial({
-                    color: 0xff0000 
-                });
-
-                var geometry = new THREE.Geometry();
-                geometry.vertices.push(
-                    camera.position,
-                    vector * 3
-                );
-
-                var line = new THREE.Line( geometry, material );
-                game._world.add( line )*/
+                var target, color;
+                for (var i = 0; i < intersects.length; i++ ) {
+                    target = intersects[i];
+                    console.log(target);
+                    if (!(target.name !== 'SPHERE')) {
+                        color = target.object.material.color;
+                        target.object.material.color.set(0xff0000);
+                        setTimeout(function() {
+                            target.object.material.color.set(color);
+                        }, 1000);
+                    }
+                }
             })
         }); // PROMISE
     } // Game.start
+
 
     return Game;
 });

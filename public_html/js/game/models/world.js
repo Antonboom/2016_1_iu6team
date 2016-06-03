@@ -20,7 +20,7 @@ define(function(require) {
 
         // Camera
         this._camera = new THREE.PerspectiveCamera(45, width / height, 1, options.farPlane || 2000);
-        this._camera.position.z = options.camDistance || 100;
+        this._camera.position.z = options.camDistance || 500;
         
         this._frameCallback = options.renderCallback;
 

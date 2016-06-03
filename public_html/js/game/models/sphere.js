@@ -33,6 +33,7 @@ define(function(require) {
                         }) 
                     );
 
+                    mesh.name = 'SPHERE';
                     sphere._mesh = mesh;
                     resolve(mesh);
                 }

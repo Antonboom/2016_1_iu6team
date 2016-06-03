@@ -45,13 +45,15 @@ define([
             var player = this;
             
             player.set({
-                posX: Math.round(camPosition.x),
-                posY: Math.round(camPosition.y) - 2,    // константы при создании
-                posZ: Math.round(camPosition.z) - 20,
 
-                rotX: Math.round(camRotation.x),
-                rotY: Math.round(camRotation.y),
-                rotZ: Math.round(camRotation.z)
+                posX: camPosition.x,
+                posY: camPosition.y,    // константы при создании
+                posZ: camPosition.z,
+
+                rotX: camRotation.x,
+                rotY: camRotation.y,
+                rotZ: camRotation.z
+
             });
         },
 
