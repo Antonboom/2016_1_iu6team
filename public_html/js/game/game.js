@@ -168,27 +168,42 @@ define(function(require) {
                 var vector = new THREE.Vector3();
                 vector.setFromMatrixPosition(game._player.getPositionInWorld());
                 var shot = new Shot(vector);
-
+                
                 var mouse = new THREE.Vector3(
                     (event.clientX / window.innerWidth ) * 2 - 1, 
                     (event.clientY / window.innerHeight ) * 2 + 1,
-                    1
+                    0.5
                 );
                 raycaster.setFromCamera(mouse, camera );
 
                 shot.ray = new THREE.Ray(
                     camera.position,
-                    vector.normalize()
+                    vector.sub(camera.position).normalize()
                 );
 
                 shots.push(shot);
                 game._world.add(shot.getMesh());
-
+                /*
                 var intersects = raycaster.intersectObjects(game._world.getScene().children);
+
+                for ( var i = 0; i < intersects.length; i++ ) {
+                    intersects[ i ].object.material.color.set( 0xff0000 );    
+                }/*
+                var material = new THREE.LineBasicMaterial({
+                    color: 0xff0000 
+                });
+
+                var geometry = new THREE.Geometry();
+                geometry.vertices.push(
+                    camera.position,
+                    vector * 3
+                );
+
+                var line = new THREE.Line( geometry, material );
+                game._world.add( line )*/
             })
         }); // PROMISE
     } // Game.start
-
 
     return Game;
 });
