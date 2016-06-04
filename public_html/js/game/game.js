@@ -28,15 +28,19 @@ define(function(require) {
 
         updatePlayer();
 
+        var lastHealth;
         for (var i = 0; i < shots.length; i++) {
             shots[i].update();
 
             if (isIntersection(shots[i]._hitbox, enemy._spacecraft._hitbox)) {
-                console.log('Попадание');
+                //console.log('Попадание');
                 world.remove(shots[i].getMesh());
                 shots.splice(i, 1);
+
+                lastHealth = enemy.get('health');
+                enemy.set({ health: lastHealth - 10 });
             } else if (!isIntersection(shots[i]._hitbox, sphere._hitbox)) {
-                console.log('За пределами мира');
+                //console.log('За пределами мира');
                 world.remove(shots[i].getMesh());
                 shots.splice(i, 1);
             }
@@ -74,7 +78,7 @@ define(function(require) {
         };
 
         socket.onmessage = function(event) {
-            console.log('Получены данные ' + event.data);
+            //console.log('Получены данные ' + event.data);
 
             var data = JSON.parse(event.data);
 
@@ -97,8 +101,26 @@ define(function(require) {
 
                 enemy.update(camPosition, camRotation);
 
-                if ((data.command !== undefined) && (data.command === CMD_ENEMY_SHOT)) {
-                    createShot(enemyCamera, enemy, false);
+                if (data.command !== undefined) {
+                    if (data.command === CMD_ENEMY_SHOT) {
+                        createShot(enemyCamera, enemy, false);
+                    } else if (data.command === CMD_WIN) {
+                        status.gaming = false;
+                        status.connected = false;
+                        socket = null;
+
+                        alert('Вы победили!');
+
+                        $(location).attr('href', '/');
+                    } else if (data.command === CMD_LOSE) {
+                        status.gaming = false;
+                        status.connected = false;
+                        socket = null;
+
+                        alert('Вы уничтожены! :(');
+
+                        $(location).attr('href', '/');
+                    }
                 }
             }
         };
@@ -117,7 +139,7 @@ define(function(require) {
     function sendData(data) {
         if (status.connected) {            
             if (status.gaming) {
-                console.log('Send data: ' + data);
+                //console.log('Send data: ' + data);
                 socket.send(data);
             }
         }
