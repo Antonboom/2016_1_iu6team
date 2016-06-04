@@ -7,7 +7,8 @@ define(function(require) {
         this._startY = y;
         this._startZ = z;
 
-        this._mesh = null;
+        this._hitbox = new THREE.Box3();
+        this._mesh = null; 
     }
     
     Spacecraft.prototype.getMesh = function() {
@@ -34,13 +35,18 @@ define(function(require) {
                     mesh.tranlation = geometry.center();
                     mesh.receiveShadow = true;
                     
-                    mesh.name = 'PLAYER';
                     spacecraft._mesh = mesh;
+                    spacecraft._hitbox.setFromObject(mesh);
+
                     resolve(mesh);
                 }
             );
         }); // Promise
     }   // loadMesh
+
+    Spacecraft.prototype.updateHitbox = function() {
+        this._hitbox.setFromObject(this._mesh);
+    }
 
     return Spacecraft;
 });

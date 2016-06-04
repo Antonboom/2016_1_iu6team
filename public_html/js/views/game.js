@@ -15,7 +15,7 @@ define(function(require) {
         },
 
         initialize: function () {          
-            // TODO: listenTo()
+            // TODO
         },
 
         render: function() {
@@ -25,11 +25,19 @@ define(function(require) {
 
         show: function () {
             this.trigger('show');
-            this.$el.show();
+            this.$el.show();   
 
             var gameField = this.$el.find('.js-game-field')[0];
             var game = new Game(gameField);
+            
             game.start();
+            
+            var view = this;
+            this.listenTo(game, 'hurt', function() {
+                var $hurt = view.$el.find('.js-hurt');
+                $hurt.fadeIn(75);
+                $hurt.fadeOut(350);
+            });
         },
 
         hide: function () {

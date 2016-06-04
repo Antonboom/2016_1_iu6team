@@ -45,19 +45,19 @@ define([
             var player = this;
             
             player.set({
-
                 posX: camPosition.x,
-                posY: camPosition.y,    // константы при создании
+                posY: camPosition.y,
                 posZ: camPosition.z,
 
                 rotX: camRotation.x,
                 rotY: camRotation.y,
                 rotZ: camRotation.z
-
             });
+
+            player._spacecraft.updateHitbox();
         },
 
-        getPositionInWorld: function() {
+        getPositionWorld: function() {
             return this.getMesh().matrixWorld;
         }
         /*

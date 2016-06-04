@@ -6,6 +6,7 @@ define(function(require) {
 
     var Sphere = function(radius) {
         this._radius = radius;
+        this._hitbox = new THREE.Box3();
         this._mesh = null;
     }
 
@@ -33,8 +34,9 @@ define(function(require) {
                         }) 
                     );
 
-                    mesh.name = 'SPHERE';
                     sphere._mesh = mesh;
+                    sphere._hitbox.setFromObject(mesh);
+                    
                     resolve(mesh);
                 }
             );  
