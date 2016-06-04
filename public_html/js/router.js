@@ -19,7 +19,6 @@ define(function(require) {
 
     var Router = Backbone.Router.extend({
         initialize: function() {
-            this.listenTo(activeSession, 'status:received', this.hidePreloader);
             this.listenTo(activeSession, 'logout', this.rootAction);
         },
 
@@ -37,7 +36,7 @@ define(function(require) {
         },
 
         scoreboardAction: function () {
-            tapp.getView('scoreboard').show();
+            app.getView('scoreboard').show();
         },
 
         gameAction: function () {
@@ -57,20 +56,16 @@ define(function(require) {
             $(location).attr('href', '/');
         },
 
-        showPreloaderView: function(viewName) {
+        showPreloaderView: function(viewName, timeout = 1000) {
+            app.hideOtherViews();
             app.showPreloader();
-            this.listenTo(
-                activeSession, 
-                'statusReceived',
-                function() {
+            activeSession.on('status:received', function() {
+                setTimeout(function() {
                     app.hidePreloader();
-                    app.getView(viewName).show();
-                }
-            );
-        },
-
-        hidePreloader: function() {
-            app.hidePreloader();
+                    app.getView(viewName).show()
+                }, timeout);
+            });
+            activeSession.fetch();
         }
     });
 

@@ -22,11 +22,6 @@ define([
             // TODO: this.listenTo(...)
         },
 
-        isVisible: function() {
-            console.log(this.$el.css('display'))
-            return (this.$el.css('display') == 'block');
-        },
-
         render: function() {
             var session = this.model;
 

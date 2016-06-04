@@ -147,13 +147,13 @@ define(function(require) {
             player.set({ signal: SGNL_CREATE_SHOT });  // hack!
             sendData(player.toJSON());
             player.unset('signal', { silent: true });
+
+            var audio = new Audio();
+            audio.src = 'sounds/lazer_effect.wav';
+            audio.autoplay = true;
         }
 
-        world.add(shot.getMesh());
-
-        var audio = new Audio();
-        audio.src = 'sounds/lazer_effect.wav';
-        audio.autoplay = true;
+        world.add(shot.getMesh());            
     }
 
     function configureControls(drag, forward, movSpeed, rollSpeed) {

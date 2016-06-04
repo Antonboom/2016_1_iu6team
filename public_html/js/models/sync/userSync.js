@@ -10,7 +10,7 @@ define(function (require) {
                         
                         model.set(userData);
 
-                        model.trigger('statusReceived');
+                        model.trigger('status:received');
                 },
 
                 error: function(xhr, error_msg, error) {

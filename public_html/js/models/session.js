@@ -27,11 +27,11 @@ define([
             
             this.listenTo(
                 this.user, 
-                'statusReceived',
+                'status:received',
                 function() { session.trigger('status:received'); }
             );     
 
-            this.fetch();     
+            // this.fetch();     
         },
 
         toJSON: function() {

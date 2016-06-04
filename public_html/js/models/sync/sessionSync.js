@@ -1,3 +1,4 @@
+
 define(function (require) {
 	return function(method, model, options) {
         if (method === 'update') {
