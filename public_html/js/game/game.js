@@ -6,6 +6,10 @@ define(function(require) {
         Spacecraft = require('./models/spacecraft');
 
     var URL = '/api/game';
+    var CMD_START = 'START',
+        CMD_ENEMY_SHOT = 'ENEMY_SHOT',
+        CMD_WIN = 'WIN',
+        CMD_LOSE = 'LOSE';
 
     var world, status, clock, controls, player, enemy, enemyCamera, sphere;
 
@@ -62,7 +66,7 @@ define(function(require) {
             
             console.log('Код: ' + event.code + ', причина: ' + event.reason);
             status.connected = false;
-            status.start = false;
+            status.gaming = false;
         };
 
         socket.onmessage = function(event) {
@@ -70,7 +74,7 @@ define(function(require) {
 
             var data = JSON.parse(event.data);
 
-            if (data.start) {
+            if (data.command === CMD_START) {
                 status.gaming = true;
                 return;
             } 
@@ -88,13 +92,20 @@ define(function(require) {
                     camRotation = enemyCamera.rotation;
 
                 enemy.update(camPosition, camRotation);
+
+                if ((data.command !== undefined) && (data.command === CMD_ENEMY_SHOT)) {
+                    createShot(enemyCamera, enemy);
+                }
             }
         };
 
         socket.onerror = function(error) {
             console.log('Ошибка ' + error.message);
-            status.connected = false;
-            status.start = false;
+            
+            if (error.code !== 403) {
+                status.connected = false;
+                status.game = false;
+            }
         };
     }
 
