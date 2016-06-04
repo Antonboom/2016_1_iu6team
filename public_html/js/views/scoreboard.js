@@ -17,7 +17,7 @@ define(function(require) {
 
         render: function () {
             var context = {
-                players: this.collection.toJSON()
+                players: this.collection
             }
 
             this.$el.html(this.template(context));

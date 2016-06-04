@@ -18,10 +18,10 @@
 						<fest:value>i</fest:value>
 					</td>
 					<td align="left">
-						<fest:value>player.name</fest:value>
+						<fest:value>JSON.parse(player).name</fest:value>
 					</td>
 					<td>
-						<fest:value>player.score</fest:value>
+						<fest:value>JSON.parse(player).score</fest:value>
 					</td>
 				</tr>
 			</fest:each>

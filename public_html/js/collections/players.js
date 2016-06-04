@@ -15,7 +15,7 @@ define([
     });
 
     function randomScore() {
-        return Math.floor(Math.random() * 101) - 50;
+        return Math.floor(Math.random() * 10) - 5;
     };
 
     var players = new PlayerScoreCollection([
