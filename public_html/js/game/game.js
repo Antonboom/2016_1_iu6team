@@ -212,7 +212,7 @@ define(function(require) {
 
         player = new Player({posX: 0, posY: -2, posZ: -20 });
         enemy = new Player({posX: 0, posY: -2, posZ: -20 });
-        sphere = new Sphere(1000);
+        sphere = new Sphere(700);
     }
 
     Game.prototype.start = function() {
