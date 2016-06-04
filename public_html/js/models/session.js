@@ -20,10 +20,18 @@ define([
         
         id: '1',    // for DELETE
 
-        initialize: function() {
-        	this._user = new UserModel();
+        user: new UserModel(),
 
-            this.fetch();
+        initialize: function() {
+        	var session = this;
+            
+            this.listenTo(
+                this.user, 
+                'statusReceived',
+                function() { session.trigger('status:received'); }
+            );     
+
+            this.fetch();     
         },
 
         toJSON: function() {
@@ -33,19 +41,19 @@ define([
         },
 
         isSigned: function() {
-            return !!this._user.get('id');
+            return !!this.user.get('id');
         },
 
         clearUser: function() {
-            this._user.clear().set(this._user.defaults);
+            this.user.clear().set(this.user.defaults);
         },
 
         setPlayer: function(playerData) {
-            this._user.set({'player': playerData});
+            this.user.set({'player': playerData});
         },
 
         getUser: function() {
-        	return this._user;
+        	return this.user;
         }
     }); // SessionModel
 

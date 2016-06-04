@@ -21,7 +21,8 @@ define(function (require) {
                     error.code = xhr.status;
 
                     model.clearUser();
-                    
+                    model.trigger('status:received');
+
                     console.log("...DEAD SESSION!\n" + error.code + " " + error.message);
                 }
             },
@@ -37,7 +38,7 @@ define(function (require) {
 
                     console.log("...SIGNIN SUCCESS!");
                     
-                    model.listenTo(model.getUser(), 'login', function() {
+                    model.listenTo(model.getUser(), 'status:received', function() {
                         $(location).attr('href', '/');
                     });
                 },

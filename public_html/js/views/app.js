@@ -20,9 +20,10 @@ define([
 
         getView: function(name) {
             var view = this._views[name];
-            
+
             if (!view.instance) {
                 view.instance = new view.viewConstructor();
+                
                 this.listenTo(view.instance, 'show', this.hideOtherViews);
                 
                 this.$el.append(view.instance.render().$el);
@@ -39,6 +40,14 @@ define([
                     view.instance.hide();
                 }
             }, this);
+        },
+
+        showPreloader: function() {
+            this.$el.find('.js-preloader').show();
+        },
+
+        hidePreloader: function() {
+            this.$el.find('.js-preloader').hide();
         }
     });
 

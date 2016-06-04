@@ -1,6 +1,4 @@
 define(function(require) {
-    var ESCAPE_CODE = 27;
-
     var Backbone = require('backbone'),
         tmpl  = require('tmpl/game'),
         Game = require('../game/game');
@@ -9,10 +7,6 @@ define(function(require) {
         template: tmpl,
 
         id: 'game',
-
-        events: {
-            'keydown': 'keyAction'
-        },
 
         initialize: function () {          
             // TODO
@@ -42,15 +36,7 @@ define(function(require) {
 
         hide: function () {
             this.$el.hide();
-        },
-
-        keyAction: function(event) {
-            var code = event.keyCode || event.which;
-            
-            if (code == ESCAPE_CODE) { 
-                window.location.href = '/';  // TODO: modal window
-            }
-        } 
+        }
     });
 
     return GameView;

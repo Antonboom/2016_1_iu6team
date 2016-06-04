@@ -19,7 +19,7 @@ define(function(require) {
 
     var Router = Backbone.Router.extend({
         initialize: function() {
-            this.listenTo(activeSession.getUser(), 'login', this.reRenderMain);
+            this.listenTo(activeSession, 'status:received', this.hidePreloader);
             this.listenTo(activeSession, 'logout', this.rootAction);
         },
 
@@ -33,23 +33,23 @@ define(function(require) {
 
         defaultActions: function () {
             // TODO: 404_view
-            app.getView('main').show();
+            this.showPreloaderView('main')
         },
 
         scoreboardAction: function () {
-            app.getView('scoreboard').show();
+            tapp.getView('scoreboard').show();
         },
 
         gameAction: function () {
-            this.authRequired('game');
+            this.showPreloaderView('game');
         },
 
         signInAction: function () {
-            this.nonAuthRequired('signIn');
+            app.getView('signIn').show();
         },
         
         signUpAction: function () {
-            this.nonAuthRequired('signUp');
+            app.getView('signUp').show();
         },
 
         rootAction: function() {
@@ -57,22 +57,20 @@ define(function(require) {
             $(location).attr('href', '/');
         },
 
-        reRenderMain: function() {
-            app.getView('main').render();   /// БАААААГ
+        showPreloaderView: function(viewName) {
+            app.showPreloader();
+            this.listenTo(
+                activeSession, 
+                'statusReceived',
+                function() {
+                    app.hidePreloader();
+                    app.getView(viewName).show();
+                }
+            );
         },
 
-        authRequired: function(viewName) {
-            if (activeSession.isSigned()) {
-                app.getView(viewName).show();
-            } else {
-                this.navigate('#signin', {trigger: true})
-            }
-        },
-
-        nonAuthRequired: function(viewName) {
-            if (!activeSession.isSigned()) {
-                app.getView(viewName).show();
-            }
+        hidePreloader: function() {
+            app.hidePreloader();
         }
     });
 

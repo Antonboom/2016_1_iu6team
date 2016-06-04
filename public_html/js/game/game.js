@@ -98,7 +98,7 @@ define(function(require) {
                 enemy.update(camPosition, camRotation);
 
                 if ((data.command !== undefined) && (data.command === CMD_ENEMY_SHOT)) {
-                    createShot(enemyCamera, enemy);
+                    createShot(enemyCamera, enemy, false);
                 }
             }
         };
@@ -127,7 +127,7 @@ define(function(require) {
         sendData(player.toJSON());
     }
 
-    function createShot(camera, player) {
+    function createShot(camera, player, signal = true) {
         var raycaster = new THREE.Raycaster();
 
         var vector = new THREE.Vector3();
@@ -143,9 +143,11 @@ define(function(require) {
 
         shots.push(shot);
 
-        player.set({ signal: SGNL_CREATE_SHOT });  // hack!
-        sendData(player.toJSON());
-        player.unset('signal', { silent: true });
+        if (signal) {
+            player.set({ signal: SGNL_CREATE_SHOT });  // hack!
+            sendData(player.toJSON());
+            player.unset('signal', { silent: true });
+        }
 
         world.add(shot.getMesh());
 
