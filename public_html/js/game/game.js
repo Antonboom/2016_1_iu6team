@@ -109,6 +109,7 @@ define(function(require) {
             if (error.code !== 403) {
                 status.connected = false;
                 status.game = false;
+                createConnection();
             }
         };
     }
@@ -142,13 +143,10 @@ define(function(require) {
 
         shots.push(shot);
 
-        sendData(
-            $.extend(
-                player.toJSON(), 
-                { signal: SGNL_CREATE_SHOT }
-            )
-        );
-        
+        player.set({ signal: SGNL_CREATE_SHOT });  // hack!
+        sendData(player.toJSON());
+        player.unset('signal', { silent: true });
+
         world.add(shot.getMesh());
 
         var audio = new Audio();
