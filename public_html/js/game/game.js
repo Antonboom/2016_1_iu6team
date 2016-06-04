@@ -9,7 +9,8 @@ define(function(require) {
     var CMD_START = 'START',
         CMD_ENEMY_SHOT = 'ENEMY_SHOT',
         CMD_WIN = 'WIN',
-        CMD_LOSE = 'LOSE';
+        CMD_LOSE = 'LOSE',
+        SGNL_CREATE_SHOT = 'CREATE_SHOT';
 
     var world, status, clock, controls, player, enemy, enemyCamera, sphere;
 
@@ -65,8 +66,11 @@ define(function(require) {
             }
             
             console.log('Код: ' + event.code + ', причина: ' + event.reason);
+
             status.connected = false;
             status.gaming = false;
+
+            createConnection();
         };
 
         socket.onmessage = function(event) {
@@ -109,15 +113,17 @@ define(function(require) {
         };
     }
 
-    function sendData() {
+    function sendData(data) {
         if (status.connected) {            
             if (status.gaming) {
-                console.log('Send player: ' + player.toJSON());
-                socket.send(player.toJSON());
+                console.log('Send data: ' + data);
+                socket.send(data);
             }
-        } else {
-            createConnection();
         }
+    }
+
+    function sendPlayerData() {
+        sendData(player.toJSON());
     }
 
     function createShot(camera, player) {
@@ -135,6 +141,14 @@ define(function(require) {
         );
 
         shots.push(shot);
+
+        sendData(
+            $.extend(
+                player.toJSON(), 
+                { signal: SGNL_CREATE_SHOT }
+            )
+        );
+        
         world.add(shot.getMesh());
 
         var audio = new Audio();
@@ -198,7 +212,8 @@ define(function(require) {
             configureControls(false, false, 30, 1); // drag, forward, movSpeed, rollSpeed
 
             world.start();
-            setInterval(sendData, 60);
+            createConnection();
+            setInterval(sendPlayerData, 60);
 
             $(document).on('click', function (event) {
                 createShot(world.getCamera(), player);               

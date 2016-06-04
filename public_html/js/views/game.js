@@ -33,11 +33,11 @@ define(function(require) {
             game.start();
             
             var view = this;
-            this.listenTo(game, 'hurt', function() {
+           /* this.listenTo(game, 'hurt', function() {
                 var $hurt = view.$el.find('.js-hurt');
                 $hurt.fadeIn(75);
                 $hurt.fadeOut(350);
-            });
+            });*/
         },
 
         hide: function () {
